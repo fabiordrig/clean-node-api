@@ -1,4 +1,6 @@
+import { BcryptAdapter } from '../../../infra/criptography/bcrypt-adapter'
 import { MongoHelper } from '../helpers/mongo-helper'
+import { AccountMongoRepository } from './account'
 
 describe('Account Mongo Repository', () => {
   beforeAll(async () => {
@@ -9,22 +11,28 @@ describe('Account Mongo Repository', () => {
     await MongoHelper.disconnect()
   })
 
-  test('',() => {
-    expect(true).toBe(true)
+  beforeEach(async () => {
+    const account = MongoHelper.getCollection('accounts')
+    await account.deleteMany({})
   })
-  // test('Should return an account on success', async () => {
-  //   const sut = new AddAccountMongoRepository()
 
-  //   const account = await sut.add({
-  //     name: 'anyName',
-  //     email: 'anyEmail@mail.com',
-  //     password: 'anyPassword'
-  //   })
+  const makeSut = (): AccountMongoRepository => {
+    return new AccountMongoRepository()
+  }
 
-  //   expect(account).toBeTruthy()
-  //   expect(account.id).toBeTruthy()
-  //   expect(account.name).toBe('anyName')
-  //   expect(account.email).toBe('anyEmail@mail.com')
-  //   expect(account.password).toBe('anyPassword')
-  // })
+  test('Should return an account on success', async () => {
+    const sut = makeSut()
+
+    const account = await sut.add({
+      name: 'anyName',
+      email: 'anyEmail@mail.com',
+      password: 'anyPassword'
+    })
+
+    expect(account).toBeTruthy()
+    expect(account.id).toBeTruthy()
+    expect(account.name).toBe('anyName')
+    expect(account.email).toBe('anyEmail@mail.com')
+    expect(account.password).toBe('anyPassword')
+  })
 })
