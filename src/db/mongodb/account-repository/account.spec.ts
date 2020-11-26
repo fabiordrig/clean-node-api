@@ -1,4 +1,3 @@
-import { BcryptAdapter } from '../../../infra/criptography/bcrypt-adapter'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account'
 
