@@ -163,6 +163,8 @@ describe('SignUpController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
+    console.log(httpResponse.body)
+
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
