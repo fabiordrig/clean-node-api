@@ -15,6 +15,5 @@ export const makeSignUpController = (): SignUpController => {
 
   const signUp = new SignUpController(emailValidatorAdapter, dbAddAccount)
 
-  // @ts-expect-error
   return new LogControllerDecorator(signUp)
 }
