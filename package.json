@@ -1,7 +1,7 @@
 {
   "name": "clean-node-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "NodeJS Rest API using TDD, Clean Architecture and TypeScript",
   "main": "index.js",
   "scripts": {
     "start": "sucrase-node src/main/server.ts",
@@ -18,7 +18,7 @@
     "tdd",
     "solid"
   ],
-  "author": "",
+  "author": "Fabio Rodrigues",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
