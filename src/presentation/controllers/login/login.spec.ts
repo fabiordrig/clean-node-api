@@ -2,6 +2,7 @@ import { LoginController } from './login'
 import { badRequest } from '../../helper'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { EmailValidator } from '../../protocols/email-validator'
+import { HttpRequest } from '../../protocols'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -11,6 +12,9 @@ const makeEmailValidator = (): EmailValidator => {
   }
   return new EmailValidatorStub()
 }
+const makeFakeRequest = (): HttpRequest => ({
+  body: { email: 'anyMail@mail.com', password: 'anyPassword' }
+})
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
@@ -34,15 +38,22 @@ describe('Login Controller', () => {
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
   })
+  test('Should return 400 if no password is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: { email: 'anyMail@mail.com' }
+    }
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('password')))
+  })
 
   test('Should return 400 if an invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut()
-    const httpRequest = {
-      body: { email: 'anyMail@mail.com', password: 'anyPassword' }
-    }
 
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')))
   })
@@ -51,11 +62,8 @@ describe('Login Controller', () => {
     const { sut, emailValidatorStub } = makeSut()
 
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-    const httpRequest = {
-      body: { email: 'anyMail@mail.com', password: 'anyPassword' }
-    }
 
-    await sut.handle(httpRequest)
+    await sut.handle(makeFakeRequest())
 
     expect(isValidSpy).toHaveBeenCalledWith('anyMail@mail.com')
   })
