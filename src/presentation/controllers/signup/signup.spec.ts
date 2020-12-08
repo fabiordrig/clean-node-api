@@ -1,13 +1,7 @@
 import { SignUpController } from './signup'
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
-import { EmailValidator, AccountModel, AddAccountModel, AddAccount, HttpRequest } from './signup-protocols'
+import { EmailValidator, AccountModel, AddAccountModel, AddAccount, HttpRequest, Validation } from './signup-protocols'
 import { ok,badRequest,serverError } from '../../helper/http-helper'
-
-interface SutType {
-  sut: SignUpController
-  emailValidatorStub: EmailValidator
-  addAccountStub: AddAccount
-}
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -31,6 +25,16 @@ const makeAddAccount = (): AddAccount => {
   return new AddAccountStub()
 }
 
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (input: any): Error {
+      return null
+    }
+  }
+
+  return new ValidationStub()
+}
+
 const makeFakeAccount = (): AccountModel => ({
   id: 'validId',
   name: 'validName',
@@ -50,8 +54,16 @@ const makeFakeRequest = (): HttpRequest => ({
 const makeSut = (): SutType => {
   const emailValidatorStub = makeEmailValidator()
   const addAccountStub = makeAddAccount()
-  const sut = new SignUpController(emailValidatorStub, addAccountStub)
-  return { sut, emailValidatorStub, addAccountStub }
+  const validationStub = makeValidation()
+  const sut = new SignUpController(emailValidatorStub, addAccountStub, validationStub)
+  return { sut, emailValidatorStub, addAccountStub, validationStub }
+}
+
+interface SutType {
+  sut: SignUpController
+  emailValidatorStub: EmailValidator
+  validationStub: Validation
+  addAccountStub: AddAccount
 }
 
 describe('SignUpController', () => {
@@ -188,6 +200,18 @@ describe('SignUpController', () => {
       name: 'anyName',
       password: 'anyPassword'
     })
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+
+    const validate = jest.spyOn(validationStub, 'validate')
+
+    const httpRequest = makeFakeRequest()
+
+    await sut.handle(httpRequest)
+
+    expect(validate).toHaveBeenCalledWith(httpRequest.body)
   })
 
   test('Should return 500 if AddAccount throws', async () => {
