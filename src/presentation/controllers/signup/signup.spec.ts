@@ -77,18 +77,6 @@ describe('SignUpController', () => {
     })
   })
 
-  test('Should call Validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
-
-    const validate = jest.spyOn(validationStub, 'validate')
-
-    const httpRequest = makeFakeRequest()
-
-    await sut.handle(httpRequest)
-
-    expect(validate).toHaveBeenCalledWith(httpRequest.body)
-  })
-
   test('Should return 500 if AddAccount throws', async () => {
     const { sut, addAccountStub } = makeSut()
 
@@ -117,5 +105,16 @@ describe('SignUpController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('error')))
+  })
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+
+    const validate = jest.spyOn(validationStub, 'validate')
+
+    const httpRequest = makeFakeRequest()
+
+    await sut.handle(httpRequest)
+
+    expect(validate).toHaveBeenCalledWith(httpRequest.body)
   })
 })
