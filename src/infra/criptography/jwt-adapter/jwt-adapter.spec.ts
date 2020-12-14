@@ -8,9 +8,7 @@ jest.mock('jsonwebtoken', () => ({
 }))
 
 const makeSut = (): JwtAdapter => {
-  const sut = new JwtAdapter('secret')
-
-  return sut
+  return new JwtAdapter('secret')
 }
 
 describe('Jwt Adapter', () => {
@@ -27,5 +25,14 @@ describe('Jwt Adapter', () => {
     const accessToken = await sut.encrypt('anyId')
 
     expect(accessToken).toBe('anyToken')
+  })
+  test('Shoul throw if sign throws', async () => {
+    const sut = makeSut()
+    jest.spyOn(jwt,'sign').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const promise = sut.encrypt('anyId')
+
+    await expect(promise).rejects.toThrow()
   })
 })
