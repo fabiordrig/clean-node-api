@@ -1,7 +1,10 @@
+import { Collection } from 'mongodb'
+import { hash } from 'bcrypt'
 import request from 'supertest'
 import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import app from '../config/app'
 
+let accountCollection: Collection
 describe('Login route', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -12,11 +15,11 @@ describe('Login route', () => {
   })
 
   beforeEach(async () => {
-    const account = await MongoHelper.getCollection('accounts')
-    await account.deleteMany({})
+    accountCollection = await MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
   describe('POST /signup', () => {
-    test('Should return 200 on success', async () => {
+    test('Should return 200 on signup success', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -24,6 +27,24 @@ describe('Login route', () => {
           email: 'fabio@gmail.com',
           password: '1234',
           passwordConfirmation: '1234'
+        })
+        .expect(200)
+    })
+  })
+  describe('POST /login', () => {
+    test('Should return 200 on login success', async () => {
+      const password = await hash('1234',12)
+      await accountCollection.insertOne({
+        name: 'Fabio',
+        email: 'fabio@gmail.com',
+        password
+      })
+
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'fabio@gmail.com',
+          password: '1234'
         })
         .expect(200)
     })
