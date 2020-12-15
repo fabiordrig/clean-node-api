@@ -1,8 +1,7 @@
 import { RequiredFieldValidation } from '../../../presentation/helper/validators/required-field-validation'
-import { CompareFieldValidation } from '../../../presentation/helper/validators/compare-field-validation'
 import { Validation } from '../../../presentation/protocols/validation'
 import { ValidationComposite } from '../../../presentation/helper/validators/validation-composite'
-import { makeSignUpValidation } from './signup-validation'
+import { makeLoginValidation } from './login-validation-factory'
 import { EmailValidation } from '../../../presentation/helper/validators/email-validation'
 import { EmailValidator } from '../../../presentation/protocols/email-validator'
 
@@ -18,16 +17,15 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
-describe('SignUpValidation Factory', () => {
+describe('LoginValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
-    makeSignUpValidation()
+    makeLoginValidation()
 
     const validations: Validation[] = []
-    for (const field of ['name', 'email', 'password', 'passwordConfirmation']) {
+    for (const field of ['email', 'password']) {
       validations.push(new RequiredFieldValidation(field))
     }
 
-    validations.push(new CompareFieldValidation('password', 'passwordConfirmation'))
     validations.push(new EmailValidation('email', makeEmailValidator()))
 
     expect(ValidationComposite).toHaveBeenLastCalledWith(validations)
