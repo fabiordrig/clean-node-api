@@ -1,6 +1,6 @@
 import { SignUpController } from './signup-controller'
 import { MissingParamError, ServerError } from '../../errors'
-import { AccountModel, AddAccountModel, AddAccount, HttpRequest, Validation } from './signup-controller-protocols'
+import { AccountModel, AddAccountModel, AddAccount, HttpRequest, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { ok,badRequest,serverError } from '../../helper/http/http-helper'
 
 const makeAddAccount = (): AddAccount => {
@@ -25,6 +25,15 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (authentication: AuthenticationModel): Promise<string> {
+      return 'anyToken'
+    }
+  }
+  return new AuthenticationStub()
+}
+
 const makeFakeAccount = (): AccountModel => ({
   id: 'validId',
   name: 'validName',
@@ -44,14 +53,16 @@ const makeFakeRequest = (): HttpRequest => ({
 const makeSut = (): SutType => {
   const addAccountStub = makeAddAccount()
   const validationStub = makeValidation()
-  const sut = new SignUpController(addAccountStub, validationStub)
-  return { sut, addAccountStub, validationStub }
+  const authenticationStub = makeAuthentication()
+  const sut = new SignUpController(addAccountStub, validationStub, authenticationStub)
+  return { sut, addAccountStub, validationStub, authenticationStub }
 }
 
 interface SutType {
   sut: SignUpController
   validationStub: Validation
   addAccountStub: AddAccount
+  authenticationStub: Authentication
 }
 
 describe('SignUpController', () => {
@@ -116,5 +127,14 @@ describe('SignUpController', () => {
     await sut.handle(httpRequest)
 
     expect(validate).toHaveBeenCalledWith(httpRequest.body)
+  })
+  test('Should call Authentication with correct values', async () => {
+    const { sut, authenticationStub } = makeSut()
+
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+
+    await sut.handle(makeFakeRequest())
+
+    expect(authSpy).toHaveBeenCalledWith({ email: 'anyEmail@mail.com', password: 'anyPassword' })
   })
 })
