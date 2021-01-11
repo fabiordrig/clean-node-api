@@ -1,6 +1,7 @@
 import { Authentication, HttpResponse, HttpRequest, Controller, AddAccount } from './signup-controller-protocols'
-import { badRequest, serverError, ok } from '../../helper'
+import { badRequest, serverError, ok, forbidden } from '../../helper'
 import { Validation } from '../../protocols/validation'
+import { EmailInUseError } from '../../errors'
 
 export class SignUpController implements Controller {
   constructor (private readonly addAccount: AddAccount,
@@ -18,11 +19,13 @@ export class SignUpController implements Controller {
 
       const { name, email, password } = httpRequest.body
 
-      await this.addAccount.add({
+      const account = await this.addAccount.add({
         name,
         email,
         password
       })
+
+      if (!account) return forbidden(new EmailInUseError())
 
       const accessToken = await this.authentication.auth({ email, password })
 
