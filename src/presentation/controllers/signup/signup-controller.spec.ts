@@ -1,14 +1,27 @@
 import { SignUpController } from './signup-controller'
 import { EmailInUseError, MissingParamError, ServerError } from '../../errors'
-import { AccountModel, AddAccountModel, AddAccount, HttpRequest, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
-import { ok,badRequest,serverError, forbidden } from '../../helper/http/http-helper'
+import {
+  AccountModel,
+  AddAccountModel,
+  AddAccount,
+  HttpRequest,
+  Validation,
+  Authentication,
+  AuthenticationModel
+} from './signup-controller-protocols'
+import {
+  ok,
+  badRequest,
+  serverError,
+  forbidden
+} from '../../helper/http/http-helper'
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountModel): Promise<AccountModel> {
       const fakeAccount = makeFakeAccount()
 
-      return new Promise(resolve => resolve(fakeAccount))
+      return new Promise((resolve) => resolve(fakeAccount))
     }
   }
 
@@ -54,7 +67,11 @@ const makeSut = (): SutType => {
   const addAccountStub = makeAddAccount()
   const validationStub = makeValidation()
   const authenticationStub = makeAuthentication()
-  const sut = new SignUpController(addAccountStub, validationStub, authenticationStub)
+  const sut = new SignUpController(
+    addAccountStub,
+    validationStub,
+    authenticationStub
+  )
   return { sut, addAccountStub, validationStub, authenticationStub }
 }
 
@@ -111,7 +128,9 @@ describe('SignUpController', () => {
   test('Should return 403 if AddAccount returns null', async () => {
     const { sut, addAccountStub } = makeSut()
 
-    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise((resolve) => resolve(null)))
+    jest
+      .spyOn(addAccountStub, 'add')
+      .mockReturnValueOnce(new Promise((resolve) => resolve(null)))
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
@@ -120,7 +139,9 @@ describe('SignUpController', () => {
   test('Should return 400 if validation returns an error', async () => {
     const { sut, validationStub } = makeSut()
 
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('error'))
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('error'))
 
     const httpResponse = await sut.handle(makeFakeRequest())
 
@@ -144,7 +165,10 @@ describe('SignUpController', () => {
 
     await sut.handle(makeFakeRequest())
 
-    expect(authSpy).toHaveBeenCalledWith({ email: 'anyEmail@mail.com', password: 'anyPassword' })
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'anyEmail@mail.com',
+      password: 'anyPassword'
+    })
   })
   test('Should return 500 if Authentication throws', async () => {
     const { sut, authenticationStub } = makeSut()

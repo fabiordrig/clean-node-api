@@ -14,7 +14,7 @@ const makeSut = (): JwtAdapter => {
 describe('Jwt Adapter', () => {
   test('Should call sign with correct values', async () => {
     const sut = makeSut()
-    const signSpy = jest.spyOn(jwt,'sign')
+    const signSpy = jest.spyOn(jwt, 'sign')
     await sut.encrypt('anyId')
 
     expect(signSpy).toHaveBeenCalledWith({ id: 'anyId' }, 'secret')
@@ -28,7 +28,7 @@ describe('Jwt Adapter', () => {
   })
   test('Shoul throw if sign throws', async () => {
     const sut = makeSut()
-    jest.spyOn(jwt,'sign').mockImplementationOnce(() => {
+    jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
       throw new Error()
     })
     const promise = sut.encrypt('anyId')

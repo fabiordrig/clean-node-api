@@ -1,7 +1,11 @@
 import { LoginController } from './login-controller'
 import { badRequest, ok, serverError, unauthorized } from '../../helper'
 import { MissingParamError, ServerError } from '../../errors'
-import { Validation, Authentication, HttpRequest } from './login-controller-protocols'
+import {
+  Validation,
+  Authentication,
+  HttpRequest
+} from './login-controller-protocols'
 import { AuthenticationModel } from '../../../domain/usecases/authentication'
 
 const makeValidation = (): Validation => {
@@ -31,7 +35,7 @@ const makeSut = (): SutTypes => {
   const validationStub = makeValidation()
   const authenticationStub = makeAuthentication()
   const sut = new LoginController(validationStub, authenticationStub)
-  return { sut , validationStub, authenticationStub }
+  return { sut, validationStub, authenticationStub }
 }
 
 interface SutTypes {
@@ -48,15 +52,18 @@ describe('Login Controller', () => {
 
     await sut.handle(makeFakeRequest())
 
-    expect(authSpy).toHaveBeenCalledWith({ email: 'anyMail@mail.com', password: 'anyPassword' })
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'anyMail@mail.com',
+      password: 'anyPassword'
+    })
   })
 
   test('Should return 401 if invalid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut()
 
-    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(
-      new Promise((resolve) => resolve(null))
-    )
+    jest
+      .spyOn(authenticationStub, 'auth')
+      .mockReturnValueOnce(new Promise((resolve) => resolve(null)))
 
     const httpResponse = await sut.handle(makeFakeRequest())
 
@@ -86,7 +93,9 @@ describe('Login Controller', () => {
   test('Should return 400 if validation returns an error', async () => {
     const { sut, validationStub } = makeSut()
 
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('error'))
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('error'))
 
     const httpResponse = await sut.handle(makeFakeRequest())
 

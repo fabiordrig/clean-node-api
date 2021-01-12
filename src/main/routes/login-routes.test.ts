@@ -33,7 +33,7 @@ describe('Login route', () => {
   })
   describe('POST /login', () => {
     test('Should return 200 on login success', async () => {
-      const password = await hash('1234',12)
+      const password = await hash('1234', 12)
       await accountCollection.insertOne({
         name: 'Fabio',
         email: 'fabio@gmail.com',

@@ -27,7 +27,9 @@ describe('SignUpValidation Factory', () => {
       validations.push(new RequiredFieldValidation(field))
     }
 
-    validations.push(new CompareFieldValidation('password', 'passwordConfirmation'))
+    validations.push(
+      new CompareFieldValidation('password', 'passwordConfirmation')
+    )
     validations.push(new EmailValidation('email', makeEmailValidator()))
 
     expect(ValidationComposite).toHaveBeenLastCalledWith(validations)

@@ -6,6 +6,10 @@ import { makeDbAddAccount } from '../usecases/add-account/add-account--factory'
 import { makeLogControllerDecorator } from '../../decorators/login-controller-decorator-factory'
 
 export const makeSignUpController = (): Controller => {
-  const controller = new SignUpController(makeDbAddAccount(), makeSignUpValidation(), makeDbAuthentication())
+  const controller = new SignUpController(
+    makeDbAddAccount(),
+    makeSignUpValidation(),
+    makeDbAuthentication()
+  )
   return makeLogControllerDecorator(controller)
 }
