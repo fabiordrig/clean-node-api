@@ -56,4 +56,11 @@ describe('Auth Middleware', () => {
 
     expect(loadSpy).toHaveBeenCalledWith('anyToken')
   })
+  test('Should return 403 if LoadAccountByToken returns null', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(accessDenied())
+  })
 })
