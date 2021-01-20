@@ -16,7 +16,7 @@ export const unauthorized = (): HttpResponse => ({
 })
 
 export const accessDenied = (): HttpResponse => ({
-  statusCode: 401,
+  statusCode: 403,
   body: new AccessDeniedError()
 })
 
