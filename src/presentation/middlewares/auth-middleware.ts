@@ -1,5 +1,5 @@
 import { LoadAccountByToken } from '../../domain/usecases/load-account-by-token'
-import { accessDenied } from '../helper'
+import { accessDenied, ok } from '../helper'
 import { HttpRequest, HttpResponse, Middleware } from '../protocols'
 
 export class AuthMiddleware implements Middleware {
@@ -8,7 +8,10 @@ export class AuthMiddleware implements Middleware {
     const accessToken = http.headers?.['x-access-token']
 
     if (accessToken) {
-      await this.loadAccountByToken.load(accessToken)
+      const account = await this.loadAccountByToken.load(accessToken)
+      if (account) {
+        return ok({ accountId: account.id })
+      }
     }
     return accessDenied()
   }
