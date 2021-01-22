@@ -1,0 +1,56 @@
+import { AddSurveyRepository, AddSurveyModel } from './db-add-survey-protocols'
+import { DbAddSurvey } from './db-add-survey'
+
+const makeSurveyData = (): AddSurveyModel => ({
+  question: 'anyQuestion',
+  answers: [
+    {
+      image: 'anyImage',
+      answer: 'anyAnswer'
+    }
+  ]
+})
+
+const makeAddSurveyRepository = (): AddSurveyRepository => {
+  class AddSurveyRepositoryStub implements AddSurveyRepository {
+    async add (survey: AddSurveyModel): Promise<void> {
+      return new Promise((resolve) => resolve())
+    }
+  }
+
+  return new AddSurveyRepositoryStub()
+}
+
+const makeSut = (): SutTypes => {
+  const addSurveyRepositoryStub = makeAddSurveyRepository()
+  const sut = new DbAddSurvey(addSurveyRepositoryStub)
+  return { addSurveyRepositoryStub, sut }
+}
+
+interface SutTypes {
+  addSurveyRepositoryStub: AddSurveyRepository
+  sut: DbAddSurvey
+}
+
+describe('DbAddSurvey', () => {
+  test('Should call AddSurveyRepository with correct values', async () => {
+    const { sut, addSurveyRepositoryStub } = makeSut()
+
+    const addSpy = jest.spyOn(addSurveyRepositoryStub, 'add')
+
+    await sut.add(makeSurveyData())
+
+    expect(addSpy).toHaveBeenCalledWith(makeSurveyData())
+  })
+  test('Should throw if AddSurveyRepository throws', async () => {
+    const { sut, addSurveyRepositoryStub } = makeSut()
+    jest
+      .spyOn(addSurveyRepositoryStub, 'add')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.add(makeSurveyData())
+    await expect(promise).rejects.toThrow()
+  })
+})

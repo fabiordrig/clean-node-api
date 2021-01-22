@@ -15,11 +15,6 @@ export const unauthorized = (): HttpResponse => ({
   body: new UnauthorizedError()
 })
 
-export const accessDenied = (): HttpResponse => ({
-  statusCode: 403,
-  body: new AccessDeniedError()
-})
-
 export const serverError = (error: Error): HttpResponse => ({
   statusCode: 500,
   body: new ServerError(error.stack)
@@ -33,4 +28,9 @@ export const ok = (data: any): HttpResponse => ({
 export const noContent = (): HttpResponse => ({
   statusCode: 204,
   body: null
+})
+
+export const accessDenied = (): HttpResponse => ({
+  statusCode: 403,
+  body: new AccessDeniedError()
 })
