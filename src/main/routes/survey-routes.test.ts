@@ -18,7 +18,7 @@ describe('Login route', () => {
     await surveyCollection.deleteMany({})
   })
   describe('POST /surveys', () => {
-    test('Should return 200 on signup success', async () => {
+    test('Should return 403 on add survey without access token', async () => {
       await request(app)
         .post('/api/surveys')
         .send({
@@ -30,7 +30,7 @@ describe('Login route', () => {
             }
           ]
         })
-        .expect(204)
+        .expect(403)
     })
   })
 })
