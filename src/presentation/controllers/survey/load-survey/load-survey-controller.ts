@@ -1,4 +1,4 @@
-import { ok } from '../../../helper'
+import { ok, serverError } from '../../../helper'
 import {
   Controller,
   HttpRequest,
@@ -8,8 +8,12 @@ import {
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const surveys = await this.loadSurveys.load()
-    return ok(surveys)
+  async handle (_: HttpRequest): Promise<HttpResponse> {
+    try {
+      const surveys = await this.loadSurveys.load()
+      return ok(surveys)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
