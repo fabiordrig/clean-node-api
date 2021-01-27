@@ -1,4 +1,4 @@
-import { badRequest, noContent, serverError } from '../../../helper/'
+import { badRequest, noContent, serverError } from '@/presentation/helper/'
 import {
   AddSurvey,
   Controller,
