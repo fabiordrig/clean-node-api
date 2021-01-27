@@ -46,7 +46,7 @@ const makeSut = (): SutTypes => {
   return { sut, loadSurveysStub }
 }
 
-interface SutTypes {
+type SutTypes = {
   sut: LoadSurveysController
   loadSurveysStub: LoadSurveys
 }

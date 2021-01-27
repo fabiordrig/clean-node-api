@@ -16,7 +16,7 @@ const makeSut = (): SutTypes => {
 
   return { sut, validationStubs }
 }
-interface SutTypes {
+type SutTypes = {
   sut: ValidationComposite
   validationStubs: Validation[]
 }

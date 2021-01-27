@@ -42,7 +42,7 @@ const makeSut = (): SutTypes => {
   return { sut, decrypterStub, loadAccountByTokenRepositoryStub }
 }
 
-interface SutTypes {
+type SutTypes = {
   sut: DbLoadAccountByToken
   decrypterStub: Decrypter
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
