@@ -74,4 +74,12 @@ describe('Login route', () => {
         .expect(204)
     })
   })
+  describe('GET /surveys', () => {
+    test('Should return 403 on load surveys without token', async () => {
+      await request(app).get('/api/surveys').expect(403)
+    })
+    // test('Should return 200 on load surveys with token', async () => {
+    //   await request(app).get('/api/surveys').expect(200)
+    // })
+  })
 })
