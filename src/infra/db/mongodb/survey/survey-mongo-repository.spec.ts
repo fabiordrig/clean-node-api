@@ -1,6 +1,25 @@
 import { Collection } from 'mongodb'
+import { AddSurveyModel } from '../../../../domain/usecases/add-survey'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
+
+const makeFakeAddSurveys = (): AddSurveyModel => ({
+  question: 'anyQuestion',
+  answers: [
+    {
+      image: 'anyImage',
+      answer: 'anyAnswer'
+    },
+    {
+      answer: 'anyAnswer'
+    }
+  ],
+  date: new Date()
+})
+
+const makeSut = (): SurveyMongoRepository => {
+  return new SurveyMongoRepository()
+}
 
 let surveyCollection: Collection
 describe('Account Mongo Repository', () => {
@@ -17,28 +36,37 @@ describe('Account Mongo Repository', () => {
     await surveyCollection.deleteMany({})
   })
 
-  const makeSut = (): SurveyMongoRepository => {
-    return new SurveyMongoRepository()
-  }
+  describe('add', () => {
+    test('Should add a survey on success', async () => {
+      const sut = makeSut()
 
-  test('Should add a survey on success', async () => {
-    const sut = makeSut()
+      await sut.add(makeFakeAddSurveys())
 
-    await sut.add({
-      question: 'anyQuestion',
-      answers: [
-        {
-          image: 'anyImage',
-          answer: 'anyAnswer'
-        },
-        {
-          answer: 'anyAnswer'
-        }
-      ],
-      date: new Date()
+      const survey = await surveyCollection.findOne({ question: 'anyQuestion' })
+      expect(survey).toBeTruthy()
     })
+  })
 
-    const survey = await surveyCollection.findOne({ question: 'anyQuestion' })
-    expect(survey).toBeTruthy()
+  describe('loadAll', () => {
+    test('Should loadAll a survey on success', async () => {
+      const sut = makeSut()
+
+      await surveyCollection.insertMany([
+        makeFakeAddSurveys(),
+        makeFakeAddSurveys()
+      ])
+
+      const surveys = await sut.loadAll()
+
+      expect(surveys.length).toBe(2)
+      expect(surveys[0].question).toBe('anyQuestion')
+    })
+    test('Should loadAll a empty list', async () => {
+      const sut = makeSut()
+
+      const surveys = await sut.loadAll()
+
+      expect(surveys.length).toBe(0)
+    })
   })
 })
