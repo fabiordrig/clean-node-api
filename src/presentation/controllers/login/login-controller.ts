@@ -1,4 +1,9 @@
-import { badRequest, ok, serverError, unauthorized } from '../../helper'
+import {
+  badRequest,
+  ok,
+  serverError,
+  unauthorized
+} from '@/presentation/helper'
 import {
   Controller,
   HttpRequest,
