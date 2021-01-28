@@ -10,14 +10,14 @@ const makeSurveyResult = (): SurveyResultModel => ({
   id: 'anyId',
   surveyId: 'anySurveyId',
   accountId: 'anyAccountId',
-  answers: 'anyAnswer',
+  answer: 'anyAnswer',
   date: new Date()
 })
 
 const makeSaveSurveyResult = (): SaveSurveyResultModel => ({
   surveyId: 'anySurveyId',
   accountId: 'anyAccountId',
-  answers: 'anyAnswer',
+  answer: 'anyAnswer',
   date: new Date()
 })
 
