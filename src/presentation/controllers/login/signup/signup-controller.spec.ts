@@ -6,12 +6,12 @@ import {
 } from '../../../errors'
 import {
   AccountModel,
-  AddAccountModel,
+  AddAccountParams,
   AddAccount,
   HttpRequest,
   Validation,
   Authentication,
-  AuthenticationModel
+  AuthenticationParams
 } from './signup-controller-protocols'
 import {
   ok,
@@ -22,7 +22,7 @@ import {
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountParams): Promise<AccountModel> {
       const fakeAccount = makeFakeAccount()
 
       return new Promise((resolve) => resolve(fakeAccount))
@@ -44,7 +44,7 @@ const makeValidation = (): Validation => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationParams): Promise<string> {
       return 'anyToken'
     }
   }
