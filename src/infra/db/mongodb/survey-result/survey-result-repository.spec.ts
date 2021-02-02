@@ -68,8 +68,6 @@ describe('Account Mongo Repository', () => {
         date: new Date()
       })
 
-      console.log(surveyResult)
-
       expect(surveyResult).toBeTruthy()
       expect(surveyResult.id).toBeTruthy()
       expect(surveyResult.answer).toBe(survey.answers[0].answer)
@@ -91,8 +89,6 @@ describe('Account Mongo Repository', () => {
         answer: survey.answers[1].answer,
         date: new Date()
       })
-
-      console.log(surveyResult)
 
       expect(surveyResult).toBeTruthy()
       expect(surveyResult.id).toBeTruthy()

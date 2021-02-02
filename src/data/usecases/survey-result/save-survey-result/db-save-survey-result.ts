@@ -1,11 +1,11 @@
 import {
   SurveyResultModel,
   SaveSurveyResultRepository,
-  SaveSurvey,
+  SaveSurveyResult,
   SaveSurveyResultModel
 } from './db-save-survey-result-protocols'
 
-export class DbSaveSurveyResult implements SaveSurvey {
+export class DbSaveSurveyResult implements SaveSurveyResult {
   constructor (
     private readonly saveSurveyResultRepository: SaveSurveyResultRepository
   ) {}
