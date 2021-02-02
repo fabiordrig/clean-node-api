@@ -1,6 +1,6 @@
 import {
   AddSurvey,
-  AddSurveyModel,
+  AddSurveyParams,
   HttpRequest,
   Validation
 } from './add-survey-protocols'
@@ -23,8 +23,8 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeAddSurvey = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
-    async add (data: AddSurveyModel): Promise<void> {
-      return new Promise((resolve) => resolve())
+    async add (data: AddSurveyParams): Promise<void> {
+      return Promise.resolve()
     }
   }
   return new AddSurveyStub()

@@ -11,7 +11,7 @@ import {
   Authentication,
   HttpRequest
 } from './login-controller-protocols'
-import { AuthenticationModel } from '@/domain/usecases/account/authentication'
+import { AuthenticationParams } from '@/domain/usecases/account/authentication'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
@@ -25,7 +25,7 @@ const makeValidation = (): Validation => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationParams): Promise<string> {
       return 'anyToken'
     }
   }
@@ -68,7 +68,7 @@ describe('Login Controller', () => {
 
     jest
       .spyOn(authenticationStub, 'auth')
-      .mockReturnValueOnce(new Promise((resolve) => resolve(null)))
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const httpResponse = await sut.handle(makeFakeRequest())
 

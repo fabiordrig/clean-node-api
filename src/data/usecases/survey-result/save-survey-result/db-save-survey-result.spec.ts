@@ -1,5 +1,5 @@
 import {
-  SaveSurveyResultModel,
+  SaveSurveyResultParams,
   SurveyResultModel,
   SaveSurveyResultRepository
 } from './db-save-survey-result-protocols'
@@ -14,7 +14,7 @@ const makeSurveyResult = (): SurveyResultModel => ({
   date: new Date()
 })
 
-const makeSaveSurveyResult = (): SaveSurveyResultModel => ({
+const makeSaveSurveyResult = (): SaveSurveyResultParams => ({
   surveyId: 'anySurveyId',
   accountId: 'anyAccountId',
   answer: 'anyAnswer',
@@ -23,8 +23,8 @@ const makeSaveSurveyResult = (): SaveSurveyResultModel => ({
 
 const makeSaveSurveyResultRepository = (): SaveSurveyResultRepository => {
   class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
-      return new Promise((resolve) => resolve(makeSurveyResult()))
+    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+      return Promise.resolve(makeSurveyResult())
     }
   }
 

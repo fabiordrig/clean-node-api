@@ -5,7 +5,7 @@ import {
   Encrypter,
   HashComparer,
   AccountModel,
-  AuthenticationModel
+  AuthenticationParams
 } from './db-authentication-protocols'
 
 const makeLoadAccountRepository = (): LoadAccountByEmailRepository => {
@@ -13,7 +13,7 @@ const makeLoadAccountRepository = (): LoadAccountByEmailRepository => {
   implements LoadAccountByEmailRepository {
     async loadByEmail (email: string): Promise<AccountModel> {
       const account: AccountModel = makeFakeAccount()
-      return new Promise((resolve) => resolve(account))
+      return Promise.resolve(account)
     }
   }
   return new LoadAccountByEmailRepositoryStub()
@@ -21,7 +21,7 @@ const makeLoadAccountRepository = (): LoadAccountByEmailRepository => {
 const makeHashComparer = (): HashComparer => {
   class HashComparerStub implements HashComparer {
     async compare (value: string, hash: string): Promise<boolean> {
-      return new Promise((resolve) => resolve(true))
+      return Promise.resolve(true)
     }
   }
   return new HashComparerStub()
@@ -29,7 +29,7 @@ const makeHashComparer = (): HashComparer => {
 const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
     async encrypt (id: string): Promise<string> {
-      return new Promise((resolve) => resolve('anyToken'))
+      return Promise.resolve('anyToken')
     }
   }
   return new EncrypterStub()
@@ -37,7 +37,7 @@ const makeEncrypter = (): Encrypter => {
 const makeUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
   class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
     async updateAccessToken (id: string, token: string): Promise<void> {
-      return new Promise((resolve) => resolve())
+      return Promise.resolve()
     }
   }
   return new UpdateAccessTokenRepositoryStub()
@@ -50,7 +50,7 @@ const makeFakeAccount = (): AccountModel => ({
   password: 'hashedPassword'
 })
 
-const makeFakeAuthentication = (): AuthenticationModel => ({
+const makeFakeAuthentication = (): AuthenticationParams => ({
   email: 'test@example.com',
   password: 'anyPassword'
 })
@@ -142,7 +142,7 @@ describe('DbAuthentication use case', () => {
 
     jest
       .spyOn(hashComparerStub, 'compare')
-      .mockReturnValueOnce(new Promise((resolve) => resolve(false)))
+      .mockReturnValueOnce(Promise.resolve(false))
 
     const accessToken = await sut.auth(makeFakeAuthentication())
 

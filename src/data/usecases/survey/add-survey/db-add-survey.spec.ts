@@ -1,8 +1,8 @@
-import { AddSurveyRepository, AddSurveyModel } from './db-add-survey-protocols'
+import { AddSurveyRepository, AddSurveyParams } from './db-add-survey-protocols'
 import { DbAddSurvey } from './db-add-survey'
 import MockDate from 'mockdate'
 
-const makeSurveyData = (): AddSurveyModel => ({
+const makeSurveyData = (): AddSurveyParams => ({
   question: 'anyQuestion',
   answers: [
     {
@@ -15,8 +15,8 @@ const makeSurveyData = (): AddSurveyModel => ({
 
 const makeAddSurveyRepository = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (survey: AddSurveyModel): Promise<void> {
-      return new Promise((resolve) => resolve())
+    async add (survey: AddSurveyParams): Promise<void> {
+      return Promise.resolve()
     }
   }
 

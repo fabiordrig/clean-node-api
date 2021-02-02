@@ -6,7 +6,7 @@ import {
   LoadSurveyById,
   SurveyModel,
   SaveSurveyResult,
-  SaveSurveyResultModel,
+  SaveSurveyResultParams,
   SurveyResultModel
 } from './save-survey-result-controller-protocols'
 import MockDate from 'mockdate'
@@ -44,8 +44,8 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
-      return new Promise((resolve) => resolve(makeSurveyResult()))
+    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+      return Promise.resolve(makeSurveyResult())
     }
   }
   return new SaveSurveyResultStub()
@@ -54,7 +54,7 @@ const makeSaveSurveyResult = (): SaveSurveyResult => {
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async loadById (id: string): Promise<SurveyModel> {
-      return new Promise((resolve) => resolve(makeSurveyModel()))
+      return Promise.resolve(makeSurveyModel())
     }
   }
   return new LoadSurveyByIdStub()
@@ -98,7 +98,7 @@ describe('SaveSurveyResult Controller', () => {
 
     jest
       .spyOn(loadSurveyByIdStub, 'loadById')
-      .mockReturnValueOnce(new Promise((resolve) => resolve(null)))
+      .mockReturnValueOnce(Promise.resolve(null))
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
