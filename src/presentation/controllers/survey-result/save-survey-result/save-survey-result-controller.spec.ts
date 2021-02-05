@@ -27,10 +27,16 @@ const makeSurveyModel = (): SurveyModel => ({
 })
 
 const makeSurveyResult = (): SurveyResultModel => ({
-  id: 'validSurveyId',
-  surveyId: 'validSurveyId',
-  accountId: 'validAccountId',
-  answer: 'validAnswer',
+  surveyId: 'anySurveyId',
+  question: 'anyQuestion',
+  answers: [
+    {
+      answer: 'anyAnswer',
+      count: 1,
+      percent: 1,
+      image: 'anyImage'
+    }
+  ],
   date: new Date()
 })
 

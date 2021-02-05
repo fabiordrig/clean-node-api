@@ -7,10 +7,16 @@ import { DbSaveSurveyResult } from './db-save-survey-result'
 import MockDate from 'mockdate'
 
 const makeSurveyResult = (): SurveyResultModel => ({
-  id: 'anyId',
   surveyId: 'anySurveyId',
-  accountId: 'anyAccountId',
-  answer: 'anyAnswer',
+  question: 'anyQuestion',
+  answers: [
+    {
+      answer: 'anyAnswer',
+      count: 1,
+      percent: 1,
+      image: 'anyImage'
+    }
+  ],
   date: new Date()
 })
 
