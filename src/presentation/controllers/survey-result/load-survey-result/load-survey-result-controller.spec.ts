@@ -4,6 +4,8 @@ import { SurveyModel } from '@/domain/models/survey'
 import { LoadSurveyById } from '@/domain/usecases/survey/load-survey-by-id'
 import { HttpRequest } from '@/presentation/protocols'
 import { LoadSurveyResultController } from './load-survey-result-controller'
+import { LoadSurveyResult } from '@/domain/usecases/survey-result/load-survey-result'
+import { SurveyResultModel } from '@/domain/models/survey-result'
 
 const makeFakeRequest = (): HttpRequest => ({
   params: { surveyId: 'anySurveyId' }
@@ -24,6 +26,20 @@ const makeSurveyModel = (): SurveyModel => ({
   date: new Date()
 })
 
+const makeSurveyResult = (): SurveyResultModel => ({
+  surveyId: 'anySurveyId',
+  question: 'anyQuestion',
+  answers: [
+    {
+      answer: 'anyAnswer',
+      count: 1,
+      percent: 1,
+      image: 'anyImage'
+    }
+  ],
+  date: new Date()
+})
+
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async loadById (id: string): Promise<SurveyModel> {
@@ -33,15 +49,29 @@ const makeLoadSurveyById = (): LoadSurveyById => {
   return new LoadSurveyByIdStub()
 }
 
+const makeLoadSurveyResult = (): LoadSurveyResult => {
+  class LoadSurveyResultStub implements LoadSurveyResult {
+    async load (surveyId: string): Promise<SurveyResultModel> {
+      return Promise.resolve(makeSurveyResult())
+    }
+  }
+  return new LoadSurveyResultStub()
+}
+
 const makeSut = (): SutTypes => {
   const loadSurveyByIdStub = makeLoadSurveyById()
-  const sut = new LoadSurveyResultController(loadSurveyByIdStub)
+  const loadSurveyResultStub = makeLoadSurveyResult()
+  const sut = new LoadSurveyResultController(
+    loadSurveyByIdStub,
+    loadSurveyResultStub
+  )
 
-  return { sut, loadSurveyByIdStub }
+  return { sut, loadSurveyByIdStub, loadSurveyResultStub }
 }
 type SutTypes = {
   sut: LoadSurveyResultController
   loadSurveyByIdStub: LoadSurveyById
+  loadSurveyResultStub: LoadSurveyResult
 }
 
 describe('LoadSurveyResult Controller', () => {
@@ -73,5 +103,13 @@ describe('LoadSurveyResult Controller', () => {
 
     const httpResponse = await sut.handle({})
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+  test('Should call LoadSurveyResult with correct values', async () => {
+    const { sut, loadSurveyResultStub } = makeSut()
+
+    const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
+    await sut.handle(makeFakeRequest())
+
+    expect(loadSpy).toHaveBeenCalledWith('anySurveyId')
   })
 })
