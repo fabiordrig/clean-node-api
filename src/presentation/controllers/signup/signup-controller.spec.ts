@@ -19,6 +19,7 @@ import {
   serverError,
   forbidden
 } from '@/presentation/helper/http/http-helper'
+import { AuthenticationModel } from '@/domain/models/authentication'
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -44,8 +45,10 @@ const makeValidation = (): Validation => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return 'anyToken'
+    async auth (
+      authentication: AuthenticationParams
+    ): Promise<AuthenticationModel> {
+      return { accessToken: 'anyToken', name: 'anyName' }
     }
   }
   return new AuthenticationStub()
@@ -126,7 +129,9 @@ describe('SignUpController', () => {
 
     const httpResponse = await sut.handle(makeFakeRequest())
 
-    expect(httpResponse).toEqual(ok({ accessToken: 'anyToken' }))
+    expect(httpResponse).toEqual(
+      ok({ accessToken: 'anyToken', name: 'anyName' })
+    )
   })
 
   test('Should return 403 if AddAccount returns null', async () => {

@@ -12,6 +12,7 @@ import {
   HttpRequest
 } from './login-controller-protocols'
 import { AuthenticationParams } from '@/domain/usecases/account/authentication'
+import { AuthenticationModel } from '@/domain/models/authentication'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
@@ -25,8 +26,10 @@ const makeValidation = (): Validation => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return 'anyToken'
+    async auth (
+      authentication: AuthenticationParams
+    ): Promise<AuthenticationModel> {
+      return { accessToken: 'anyToken', name: 'anyName' }
     }
   }
   return new AuthenticationStub()
@@ -92,7 +95,9 @@ describe('Login Controller', () => {
 
     const httpResponse = await sut.handle(makeFakeRequest())
 
-    expect(httpResponse).toEqual(ok({ accessToken: 'anyToken' }))
+    expect(httpResponse).toEqual(
+      ok({ accessToken: 'anyToken', name: 'anyName' })
+    )
   })
 
   test('Should return 400 if validation returns an error', async () => {
