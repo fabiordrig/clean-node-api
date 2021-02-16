@@ -31,7 +31,7 @@ const makeFakeSurveys = (): SurveyModel[] => {
 
 const makeLoadSurveysRepositoryStub = (): LoadSurveysRepository => {
   class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (): Promise<SurveyModel[]> {
+    async loadAll (accountId: string): Promise<SurveyModel[]> {
       return Promise.resolve(makeFakeSurveys())
     }
   }
@@ -50,6 +50,8 @@ type SutTypes = {
   loadSurveysRepositoryStub: LoadSurveysRepository
 }
 
+const accountId = 'anyId'
+
 describe('DbLoadSurveys', () => {
   beforeAll(() => {
     MockDate.set(new Date())
@@ -61,13 +63,14 @@ describe('DbLoadSurveys', () => {
   test('Should call LoadSurveysRepository', async () => {
     const { sut, loadSurveysRepositoryStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurveysRepositoryStub, 'loadAll')
-    await sut.load()
 
-    expect(loadSpy).toHaveBeenCalled()
+    await sut.load(accountId)
+
+    expect(loadSpy).toHaveBeenCalledWith(accountId)
   })
   test('Should a list of survey on success', async () => {
     const { sut } = makeSut()
-    const surveys = await sut.load()
+    const surveys = await sut.load(accountId)
 
     expect(surveys).toEqual(makeFakeSurveys())
   })
@@ -79,7 +82,7 @@ describe('DbLoadSurveys', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const promise = sut.load()
+    const promise = sut.load(accountId)
     await expect(promise).rejects.toThrow()
   })
 })
