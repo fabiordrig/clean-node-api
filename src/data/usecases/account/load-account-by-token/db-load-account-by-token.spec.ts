@@ -116,8 +116,8 @@ describe('DbLoadAccountByToken Usecase', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const promise = sut.load('anyToken', 'anyRole')
-    await expect(promise).rejects.toThrow()
+    const account = await sut.load('anyToken', 'anyRole')
+    expect(account).toBeNull()
   })
   test('Should throw if LoadAccountByTokenRepository throws', async () => {
     const { sut, loadAccountByTokenRepositoryStub } = makeSut()
