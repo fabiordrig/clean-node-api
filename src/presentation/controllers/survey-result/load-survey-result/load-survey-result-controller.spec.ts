@@ -9,7 +9,8 @@ import { SurveyResultModel } from '@/domain/models/survey-result'
 import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({
-  params: { surveyId: 'anySurveyId' }
+  params: { surveyId: 'anySurveyId' },
+  accountId: 'anyAccountId'
 })
 
 const makeSurveyModel = (): SurveyModel => ({
@@ -35,7 +36,8 @@ const makeSurveyResult = (): SurveyResultModel => ({
       answer: 'anyAnswer',
       count: 1,
       percent: 1,
-      image: 'anyImage'
+      image: 'anyImage',
+      isCurrentAccountAnswer: false
     }
   ],
   date: new Date()
@@ -52,7 +54,10 @@ const makeLoadSurveyById = (): LoadSurveyById => {
 
 const makeLoadSurveyResult = (): LoadSurveyResult => {
   class LoadSurveyResultStub implements LoadSurveyResult {
-    async load (surveyId: string): Promise<SurveyResultModel> {
+    async load (
+      surveyId: string,
+      accountId: string
+    ): Promise<SurveyResultModel> {
       return Promise.resolve(makeSurveyResult())
     }
   }
@@ -118,7 +123,7 @@ describe('LoadSurveyResult Controller', () => {
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
     await sut.handle(makeFakeRequest())
 
-    expect(loadSpy).toHaveBeenCalledWith('anySurveyId')
+    expect(loadSpy).toHaveBeenCalledWith('anySurveyId', 'anyAccountId')
   })
   test('Should return 500 if LoadSurveyResult throws', async () => {
     const { sut, loadSurveyResultStub } = makeSut()

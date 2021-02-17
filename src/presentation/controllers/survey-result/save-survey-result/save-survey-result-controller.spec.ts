@@ -34,7 +34,8 @@ const makeSurveyResult = (): SurveyResultModel => ({
       answer: 'anyAnswer',
       count: 1,
       percent: 1,
-      image: 'anyImage'
+      image: 'anyImage',
+      isCurrentAccountAnswer: false
     }
   ],
   date: new Date()

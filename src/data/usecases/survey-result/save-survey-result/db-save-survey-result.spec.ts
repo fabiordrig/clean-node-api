@@ -15,7 +15,8 @@ const makeSurveyResult = (): SurveyResultModel => ({
       answer: 'anyAnswer',
       count: 1,
       percent: 1,
-      image: 'anyImage'
+      image: 'anyImage',
+      isCurrentAccountAnswer: false
     }
   ],
   date: new Date()
@@ -45,7 +46,8 @@ const mockSurveyResult = (): SurveyResultModel => ({
       answer: 'anyAnswer',
       count: 1,
       percent: 1,
-      image: 'anyImage'
+      image: 'anyImage',
+      isCurrentAccountAnswer: false
     }
   ],
   date: new Date()
@@ -53,7 +55,10 @@ const mockSurveyResult = (): SurveyResultModel => ({
 
 const mockLoadSurveyResult = (): LoadSurveyResultRepository => {
   class LoadSurveyResultRepositoryStub implements LoadSurveyResultRepository {
-    async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
+    async loadBySurveyId (
+      surveyId: string,
+      accountId: string
+    ): Promise<SurveyResultModel> {
       return Promise.resolve(mockSurveyResult())
     }
   }
@@ -101,7 +106,10 @@ describe('DbSaveSurveyResult', () => {
 
     await sut.save(makeSaveSurveyResult())
 
-    expect(loadSPy).toHaveBeenCalledWith(makeSaveSurveyResult().surveyId)
+    expect(loadSPy).toHaveBeenCalledWith(
+      makeSaveSurveyResult().surveyId,
+      makeSaveSurveyResult().accountId
+    )
   })
   test('Should return an  SurveyResultModel on success', async () => {
     const { sut } = makeSut()

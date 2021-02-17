@@ -15,7 +15,8 @@ const mockSurveyResult = (): SurveyResultModel => ({
       answer: 'anyAnswer',
       count: 0,
       percent: 0,
-      image: 'anyImage'
+      image: 'anyImage',
+      isCurrentAccountAnswer: false
     }
   ],
   date: new Date()
@@ -44,7 +45,10 @@ const makeLoadSurveyByIdRepositoryStub = (): LoadSurveyByIdRepository => {
 
 const mockLoadSurveyResult = (): LoadSurveyResultRepository => {
   class LoadSurveyResultRepositoryStub implements LoadSurveyResultRepository {
-    async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
+    async loadBySurveyId (
+      surveyId: string,
+      accountId: string
+    ): Promise<SurveyResultModel> {
       return Promise.resolve(mockSurveyResult())
     }
   }
@@ -83,14 +87,14 @@ describe('DbLoadSurveyResult Usecase', () => {
       loadSurveyResultRepositoryStub,
       'loadBySurveyId'
     )
-    await sut.load('anySurveyId')
-    expect(loadSurveySpy).toHaveBeenCalledWith('anySurveyId')
+    await sut.load('anySurveyId', 'anyAccountId')
+    expect(loadSurveySpy).toHaveBeenCalledWith('anySurveyId', 'anyAccountId')
   })
 
   test('Should return a SurveyResultModel on success', async () => {
     const { sut } = makeSut()
 
-    const response = await sut.load('anySurveyId')
+    const response = await sut.load('anySurveyId', 'anyAccountId')
 
     expect(response).toEqual(mockSurveyResult())
   })
@@ -107,7 +111,7 @@ describe('DbLoadSurveyResult Usecase', () => {
       .spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
       .mockReturnValueOnce(Promise.resolve(null))
 
-    await sut.load('anySurveyId')
+    await sut.load('anySurveyId', 'anyAccountId')
 
     expect(loadSpy).toHaveBeenCalledWith('anySurveyId')
   })
@@ -118,7 +122,7 @@ describe('DbLoadSurveyResult Usecase', () => {
       .spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
       .mockReturnValueOnce(Promise.resolve(null))
 
-    const response = await sut.load('anySurveyId')
+    const response = await sut.load('anySurveyId', 'anyAccountId')
 
     expect(response).toEqual(mockSurveyResult())
   })
@@ -130,7 +134,7 @@ describe('DbLoadSurveyResult Usecase', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const promise = sut.load('anySurveyId')
+    const promise = sut.load('anySurveyId', 'anyAccountId')
     await expect(promise).rejects.toThrow()
   })
 })
