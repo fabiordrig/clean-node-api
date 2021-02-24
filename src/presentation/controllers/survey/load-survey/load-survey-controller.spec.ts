@@ -1,5 +1,5 @@
 import { LoadSurveysController } from './load-survey-controller'
-import { HttpRequest, LoadSurveys, SurveyModel } from './load-survey-protocols'
+import { LoadSurveys, SurveyModel } from './load-survey-protocols'
 import MockDate from 'mockdate'
 import { noContent, ok, serverError } from '@/presentation/helper'
 
@@ -51,7 +51,9 @@ type SutTypes = {
   loadSurveysStub: LoadSurveys
 }
 
-const mockRequest = (): HttpRequest => ({ accountId: 'validId' })
+const mockRequest = (): LoadSurveysController.Request => ({
+  accountId: 'validId'
+})
 
 describe('LoadSurveys Controller', () => {
   beforeAll(() => {

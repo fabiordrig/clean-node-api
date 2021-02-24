@@ -8,7 +8,6 @@ import {
   AccountModel,
   AddAccountParams,
   AddAccount,
-  HttpRequest,
   Validation,
   Authentication,
   AuthenticationParams
@@ -61,13 +60,11 @@ const makeFakeAccount = (): AccountModel => ({
   password: 'validPassword'
 })
 
-const makeFakeRequest = (): HttpRequest => ({
-  body: {
-    email: 'anyEmail@mail.com',
-    name: 'anyName',
-    password: 'anyPassword',
-    passwordConfirmation: 'anyPassword'
-  }
+const makeFakeRequest = (): SignUpController.Request => ({
+  email: 'anyEmail@mail.com',
+  name: 'anyName',
+  password: 'anyPassword',
+  passwordConfirmation: 'anyPassword'
 })
 
 const makeSut = (): SutType => {
@@ -95,15 +92,13 @@ describe('SignUpController', () => {
 
     const addSpy = jest.spyOn(addAccountStub, 'add')
 
-    const httpRequest = {
-      body: {
-        email: 'invalidEmail@mail.com',
-        name: 'anyName',
-        password: 'anyPassword',
-        passwordConfirmation: 'anyPassword'
-      }
+    const request = {
+      email: 'invalidEmail@mail.com',
+      name: 'anyName',
+      password: 'anyPassword',
+      passwordConfirmation: 'anyPassword'
     }
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
     expect(addSpy).toHaveBeenCalledWith({
       email: 'invalidEmail@mail.com',
@@ -159,11 +154,11 @@ describe('SignUpController', () => {
 
     const validate = jest.spyOn(validationStub, 'validate')
 
-    const httpRequest = makeFakeRequest()
+    const request = makeFakeRequest()
 
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
-    expect(validate).toHaveBeenCalledWith(httpRequest.body)
+    expect(validate).toHaveBeenCalledWith(request)
   })
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut()

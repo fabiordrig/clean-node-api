@@ -2,7 +2,6 @@ import { InvalidParamError } from '@/presentation/errors'
 import { forbidden, ok, serverError } from '@/presentation/helper'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import {
-  HttpRequest,
   LoadSurveyById,
   SurveyModel,
   SaveSurveyResult,
@@ -41,11 +40,9 @@ const makeSurveyResult = (): SurveyResultModel => ({
   date: new Date()
 })
 
-const makeFakeRequest = (): HttpRequest => ({
-  params: { surveyId: 'anySurveyId' },
-  body: {
-    answer: 'anyAnswer'
-  },
+const makeFakeRequest = (): SaveSurveyResultController.Request => ({
+  surveyId: 'anySurveyId',
+  answer: 'anyAnswer',
   accountId: 'anyAccountId'
 })
 
@@ -118,17 +115,15 @@ describe('SaveSurveyResult Controller', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
   test('Should return 403 if an invalid answer is provided', async () => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.handle({
-      params: { surveyId: 'anySurveyId' },
-      body: {
-        answer: 'wrongAnswer'
-      },
+      surveyId: 'anySurveyId',
+      answer: 'wrongAnswer',
       accountId: 'anyAccountId'
     })
 
@@ -155,7 +150,7 @@ describe('SaveSurveyResult Controller', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
   test('Should return 200 on success', async () => {

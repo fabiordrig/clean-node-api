@@ -2,14 +2,13 @@ import { InvalidParamError } from '@/presentation/errors'
 import { forbidden, ok, serverError } from '@/presentation/helper'
 import { SurveyModel } from '@/domain/models/survey'
 import { LoadSurveyById } from '@/domain/usecases/survey/load-survey-by-id'
-import { HttpRequest } from '@/presentation/protocols'
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import { LoadSurveyResult } from '@/domain/usecases/survey-result/load-survey-result'
 import { SurveyResultModel } from '@/domain/models/survey-result'
 import MockDate from 'mockdate'
 
-const makeFakeRequest = (): HttpRequest => ({
-  params: { surveyId: 'anySurveyId' },
+const makeFakeRequest = (): LoadSurveyResultController.Request => ({
+  surveyId: 'anySurveyId',
   accountId: 'anyAccountId'
 })
 
@@ -114,7 +113,7 @@ describe('LoadSurveyResult Controller', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
   test('Should call LoadSurveyResult with correct values', async () => {
@@ -133,7 +132,7 @@ describe('LoadSurveyResult Controller', () => {
         new Promise((resolve, reject) => reject(new Error()))
       )
 
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
   test('Should return 200 on success', async () => {

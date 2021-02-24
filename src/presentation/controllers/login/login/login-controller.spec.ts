@@ -6,11 +6,7 @@ import {
   unauthorized
 } from '@/presentation/helper'
 import { MissingParamError, ServerError } from '@/presentation/errors'
-import {
-  Validation,
-  Authentication,
-  HttpRequest
-} from './login-controller-protocols'
+import { Validation, Authentication } from './login-controller-protocols'
 import { AuthenticationParams } from '@/domain/usecases/account/authentication'
 import { AuthenticationModel } from '@/domain/models/authentication'
 
@@ -35,8 +31,9 @@ const makeAuthentication = (): Authentication => {
   return new AuthenticationStub()
 }
 
-const makeFakeRequest = (): HttpRequest => ({
-  body: { email: 'anyMail@mail.com', password: 'anyPassword' }
+const makeFakeRequest = (): LoginController.Request => ({
+  email: 'anyMail@mail.com',
+  password: 'anyPassword'
 })
 
 const makeSut = (): SutTypes => {
@@ -116,10 +113,10 @@ describe('Login Controller', () => {
 
     const validate = jest.spyOn(validationStub, 'validate')
 
-    const httpRequest = makeFakeRequest()
+    const request = makeFakeRequest()
 
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
-    expect(validate).toHaveBeenCalledWith(httpRequest.body)
+    expect(validate).toHaveBeenCalledWith(request)
   })
 })

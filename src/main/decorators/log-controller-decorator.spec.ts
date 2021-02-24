@@ -1,4 +1,4 @@
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { Controller, HttpResponse } from '@/presentation/protocols'
 import { LogControllerDecorator } from './log-controller-decorator'
 import { serverError, ok } from '@/presentation/helper'
 import { LogErrorRepository } from '@/data/protocols/db/log/log-error-repository'
@@ -6,7 +6,7 @@ import { AccountModel } from '@/domain/models/account'
 
 const makeController = (): Controller => {
   class ControllerStub implements Controller {
-    async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+    async handle (httpRequest: any): Promise<HttpResponse> {
       return Promise.resolve(ok(makeFakeAccount()))
     }
   }
@@ -35,13 +35,11 @@ const makeFakeAccount = (): AccountModel => ({
   password: 'validPassword'
 })
 
-const makeFakeRequest = (): HttpRequest => ({
-  body: {
-    email: 'anyEmail@mail.com',
-    name: 'anyName',
-    password: 'anyPassword',
-    passwordConfirmation: 'anyPassword'
-  }
+const makeFakeRequest = (): any => ({
+  email: 'anyEmail@mail.com',
+  name: 'anyName',
+  password: 'anyPassword',
+  passwordConfirmation: 'anyPassword'
 })
 
 type SutTypes = {

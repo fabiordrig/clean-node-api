@@ -5,11 +5,7 @@ import {
 } from '@/presentation/helper/http/http-helper'
 import { AccessDeniedError } from '@/presentation/errors'
 import { AuthMiddleware } from './auth-middleware'
-import {
-  LoadAccountByToken,
-  HttpRequest,
-  AccountModel
-} from './auth-middleware-protocols'
+import { LoadAccountByToken, AccountModel } from './auth-middleware-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'validId',
@@ -18,10 +14,8 @@ const makeFakeAccount = (): AccountModel => ({
   password: 'hashedPassword'
 })
 
-const makeFakeRequest = (): HttpRequest => ({
-  headers: {
-    'x-access-token': 'any_token'
-  }
+const makeFakeRequest = (): AuthMiddleware.Request => ({
+  accessToken: 'any_token'
 })
 
 type SutTypes = {

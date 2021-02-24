@@ -6,7 +6,6 @@ import {
 } from '@/presentation/helper'
 import {
   Controller,
-  HttpRequest,
   HttpResponse,
   Validation,
   Authentication
@@ -18,11 +17,11 @@ export class LoginController implements Controller {
     private readonly authentication: Authentication
   ) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { email, password } = httpRequest.body
+  async handle (request: LoginController.Request): Promise<HttpResponse> {
+    const { email, password } = request
 
     try {
-      const error = this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(request)
 
       if (error) {
         return badRequest(error)
@@ -37,5 +36,12 @@ export class LoginController implements Controller {
     } catch (err) {
       return serverError(err)
     }
+  }
+}
+
+export namespace LoginController {
+  export type Request = {
+    email: string
+    password: string
   }
 }
